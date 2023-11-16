@@ -8,7 +8,15 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'movie.g.dart';
 
-@JsonSerializable()
+const firestoreSerializable = JsonSerializable(
+  converters: firestoreJsonConverters,
+  // The following values could alternatively be set inside your `build.yaml`
+  explicitToJson: true,
+  createFieldMap: true,
+  createPerFieldToJson: true,
+);
+
+@firestoreSerializable
 class Movie {
   Movie({
     this.genre,
@@ -38,7 +46,7 @@ class Movie {
   final Set<String>? tags;
 }
 
-@JsonSerializable()
+@firestoreSerializable
 class ChildMovie extends Movie {
   ChildMovie({
     required super.id,
@@ -52,19 +60,5 @@ class ChildMovie extends Movie {
 }
 
 @Collection<Movie>('firestore-example-app')
-@Collection<Comment>('firestore-example-app/*/comments', name: 'comments')
+@Collection<ChildMovie>('child-movies')
 final moviesRef = MovieCollectionReference();
-
-@Collection<ChildMovie>('example')
-final childMoviesRef = ChildMovieCollectionReference();
-
-@JsonSerializable()
-class Comment {
-  Comment({
-    required this.authorName,
-    required this.message,
-  });
-
-  final String authorName;
-  final String message;
-}

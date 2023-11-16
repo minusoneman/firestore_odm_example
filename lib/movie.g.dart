@@ -114,10 +114,6 @@ abstract class MovieDocumentReference
     return _$MovieCollectionReference(reference.firestore);
   }
 
-  late final CommentCollectionReference comments = _$CommentCollectionReference(
-    reference,
-  );
-
   @override
   Stream<MovieDocumentSnapshot> snapshots();
 
@@ -186,10 +182,6 @@ class _$MovieDocumentReference
   MovieCollectionReference get parent {
     return _$MovieCollectionReference(reference.firestore);
   }
-
-  late final CommentCollectionReference comments = _$CommentCollectionReference(
-    reference,
-  );
 
   @override
   Stream<MovieDocumentSnapshot> snapshots() {
@@ -1914,968 +1906,6 @@ class MovieQueryDocumentSnapshot extends FirestoreQueryDocumentSnapshot<Movie>
 /// A collection reference object can be used for adding documents,
 /// getting document references, and querying for documents
 /// (using the methods inherited from Query).
-abstract class CommentCollectionReference
-    implements
-        CommentQuery,
-        FirestoreCollectionReference<Comment, CommentQuerySnapshot> {
-  factory CommentCollectionReference(
-    DocumentReference<Movie> parent,
-  ) = _$CommentCollectionReference;
-
-  static Comment fromFirestore(
-    DocumentSnapshot<Map<String, Object?>> snapshot,
-    SnapshotOptions? options,
-  ) {
-    return _$CommentFromJson(snapshot.data()!);
-  }
-
-  static Map<String, Object?> toFirestore(
-    Comment value,
-    SetOptions? options,
-  ) {
-    return _$CommentToJson(value);
-  }
-
-  @override
-  CollectionReference<Comment> get reference;
-
-  /// A reference to the containing [MovieDocumentReference] if this is a subcollection.
-  MovieDocumentReference get parent;
-
-  @override
-  CommentDocumentReference doc([String? id]);
-
-  /// Add a new document to this collection with the specified data,
-  /// assigning it a document ID automatically.
-  Future<CommentDocumentReference> add(Comment value);
-}
-
-class _$CommentCollectionReference extends _$CommentQuery
-    implements CommentCollectionReference {
-  factory _$CommentCollectionReference(
-    DocumentReference<Movie> parent,
-  ) {
-    return _$CommentCollectionReference._(
-      MovieDocumentReference(parent),
-      parent.collection('comments').withConverter(
-            fromFirestore: CommentCollectionReference.fromFirestore,
-            toFirestore: CommentCollectionReference.toFirestore,
-          ),
-    );
-  }
-
-  _$CommentCollectionReference._(
-    this.parent,
-    CollectionReference<Comment> reference,
-  ) : super(reference, $referenceWithoutCursor: reference);
-
-  @override
-  final MovieDocumentReference parent;
-
-  String get path => reference.path;
-
-  @override
-  CollectionReference<Comment> get reference =>
-      super.reference as CollectionReference<Comment>;
-
-  @override
-  CommentDocumentReference doc([String? id]) {
-    assert(
-      id == null || id.split('/').length == 1,
-      'The document ID cannot be from a different collection',
-    );
-    return CommentDocumentReference(
-      reference.doc(id),
-    );
-  }
-
-  @override
-  Future<CommentDocumentReference> add(Comment value) {
-    return reference.add(value).then((ref) => CommentDocumentReference(ref));
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is _$CommentCollectionReference &&
-        other.runtimeType == runtimeType &&
-        other.reference == reference;
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, reference);
-}
-
-abstract class CommentDocumentReference
-    extends FirestoreDocumentReference<Comment, CommentDocumentSnapshot> {
-  factory CommentDocumentReference(DocumentReference<Comment> reference) =
-      _$CommentDocumentReference;
-
-  DocumentReference<Comment> get reference;
-
-  /// A reference to the [CommentCollectionReference] containing this document.
-  CommentCollectionReference get parent {
-    return _$CommentCollectionReference(
-      reference.parent.parent!.withConverter<Movie>(
-        fromFirestore: MovieCollectionReference.fromFirestore,
-        toFirestore: MovieCollectionReference.toFirestore,
-      ),
-    );
-  }
-
-  @override
-  Stream<CommentDocumentSnapshot> snapshots();
-
-  @override
-  Future<CommentDocumentSnapshot> get([GetOptions? options]);
-
-  @override
-  Future<void> delete();
-
-  /// Updates data on the document. Data will be merged with any existing
-  /// document data.
-  ///
-  /// If no document exists yet, the update will fail.
-  Future<void> update({
-    String authorName,
-    FieldValue authorNameFieldValue,
-    String message,
-    FieldValue messageFieldValue,
-  });
-
-  /// Updates fields in the current document using the transaction API.
-  ///
-  /// The update will fail if applied to a document that does not exist.
-  void transactionUpdate(
-    Transaction transaction, {
-    String authorName,
-    FieldValue authorNameFieldValue,
-    String message,
-    FieldValue messageFieldValue,
-  });
-}
-
-class _$CommentDocumentReference
-    extends FirestoreDocumentReference<Comment, CommentDocumentSnapshot>
-    implements CommentDocumentReference {
-  _$CommentDocumentReference(this.reference);
-
-  @override
-  final DocumentReference<Comment> reference;
-
-  /// A reference to the [CommentCollectionReference] containing this document.
-  CommentCollectionReference get parent {
-    return _$CommentCollectionReference(
-      reference.parent.parent!.withConverter<Movie>(
-        fromFirestore: MovieCollectionReference.fromFirestore,
-        toFirestore: MovieCollectionReference.toFirestore,
-      ),
-    );
-  }
-
-  @override
-  Stream<CommentDocumentSnapshot> snapshots() {
-    return reference.snapshots().map(CommentDocumentSnapshot._);
-  }
-
-  @override
-  Future<CommentDocumentSnapshot> get([GetOptions? options]) {
-    return reference.get(options).then(CommentDocumentSnapshot._);
-  }
-
-  @override
-  Future<CommentDocumentSnapshot> transactionGet(Transaction transaction) {
-    return transaction.get(reference).then(CommentDocumentSnapshot._);
-  }
-
-  Future<void> update({
-    Object? authorName = _sentinel,
-    FieldValue? authorNameFieldValue,
-    Object? message = _sentinel,
-    FieldValue? messageFieldValue,
-  }) async {
-    assert(
-      authorName == _sentinel || authorNameFieldValue == null,
-      "Cannot specify both authorName and authorNameFieldValue",
-    );
-    assert(
-      message == _sentinel || messageFieldValue == null,
-      "Cannot specify both message and messageFieldValue",
-    );
-    final json = {
-      if (authorName != _sentinel)
-        _$CommentFieldMap['authorName']!:
-            _$CommentPerFieldToJson.authorName(authorName as String),
-      if (authorNameFieldValue != null)
-        _$CommentFieldMap['authorName']!: authorNameFieldValue,
-      if (message != _sentinel)
-        _$CommentFieldMap['message']!:
-            _$CommentPerFieldToJson.message(message as String),
-      if (messageFieldValue != null)
-        _$CommentFieldMap['message']!: messageFieldValue,
-    };
-
-    return reference.update(json);
-  }
-
-  void transactionUpdate(
-    Transaction transaction, {
-    Object? authorName = _sentinel,
-    FieldValue? authorNameFieldValue,
-    Object? message = _sentinel,
-    FieldValue? messageFieldValue,
-  }) {
-    assert(
-      authorName == _sentinel || authorNameFieldValue == null,
-      "Cannot specify both authorName and authorNameFieldValue",
-    );
-    assert(
-      message == _sentinel || messageFieldValue == null,
-      "Cannot specify both message and messageFieldValue",
-    );
-    final json = {
-      if (authorName != _sentinel)
-        _$CommentFieldMap['authorName']!:
-            _$CommentPerFieldToJson.authorName(authorName as String),
-      if (authorNameFieldValue != null)
-        _$CommentFieldMap['authorName']!: authorNameFieldValue,
-      if (message != _sentinel)
-        _$CommentFieldMap['message']!:
-            _$CommentPerFieldToJson.message(message as String),
-      if (messageFieldValue != null)
-        _$CommentFieldMap['message']!: messageFieldValue,
-    };
-
-    transaction.update(reference, json);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is CommentDocumentReference &&
-        other.runtimeType == runtimeType &&
-        other.parent == parent &&
-        other.id == id;
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, parent, id);
-}
-
-abstract class CommentQuery
-    implements QueryReference<Comment, CommentQuerySnapshot> {
-  @override
-  CommentQuery limit(int limit);
-
-  @override
-  CommentQuery limitToLast(int limit);
-
-  /// Perform an order query based on a [FieldPath].
-  ///
-  /// This method is considered unsafe as it does check that the field path
-  /// maps to a valid property or that parameters such as [isEqualTo] receive
-  /// a value of the correct type.
-  ///
-  /// If possible, instead use the more explicit variant of order queries:
-  ///
-  /// **AVOID**:
-  /// ```dart
-  /// collection.orderByFieldPath(
-  ///   FieldPath.fromString('title'),
-  ///   startAt: 'title',
-  /// );
-  /// ```
-  ///
-  /// **PREFER**:
-  /// ```dart
-  /// collection.orderByTitle(startAt: 'title');
-  /// ```
-  CommentQuery orderByFieldPath(
-    FieldPath fieldPath, {
-    bool descending = false,
-    Object? startAt,
-    Object? startAfter,
-    Object? endAt,
-    Object? endBefore,
-    CommentDocumentSnapshot? startAtDocument,
-    CommentDocumentSnapshot? endAtDocument,
-    CommentDocumentSnapshot? endBeforeDocument,
-    CommentDocumentSnapshot? startAfterDocument,
-  });
-
-  /// Perform a where query based on a [FieldPath].
-  ///
-  /// This method is considered unsafe as it does check that the field path
-  /// maps to a valid property or that parameters such as [isEqualTo] receive
-  /// a value of the correct type.
-  ///
-  /// If possible, instead use the more explicit variant of where queries:
-  ///
-  /// **AVOID**:
-  /// ```dart
-  /// collection.whereFieldPath(FieldPath.fromString('title'), isEqualTo: 'title');
-  /// ```
-  ///
-  /// **PREFER**:
-  /// ```dart
-  /// collection.whereTitle(isEqualTo: 'title');
-  /// ```
-  CommentQuery whereFieldPath(
-    FieldPath fieldPath, {
-    Object? isEqualTo,
-    Object? isNotEqualTo,
-    Object? isLessThan,
-    Object? isLessThanOrEqualTo,
-    Object? isGreaterThan,
-    Object? isGreaterThanOrEqualTo,
-    Object? arrayContains,
-    List<Object?>? arrayContainsAny,
-    List<Object?>? whereIn,
-    List<Object?>? whereNotIn,
-    bool? isNull,
-  });
-
-  CommentQuery whereDocumentId({
-    String? isEqualTo,
-    String? isNotEqualTo,
-    String? isLessThan,
-    String? isLessThanOrEqualTo,
-    String? isGreaterThan,
-    String? isGreaterThanOrEqualTo,
-    bool? isNull,
-    List<String>? whereIn,
-    List<String>? whereNotIn,
-  });
-  CommentQuery whereAuthorName({
-    String? isEqualTo,
-    String? isNotEqualTo,
-    String? isLessThan,
-    String? isLessThanOrEqualTo,
-    String? isGreaterThan,
-    String? isGreaterThanOrEqualTo,
-    bool? isNull,
-    List<String>? whereIn,
-    List<String>? whereNotIn,
-  });
-  CommentQuery whereMessage({
-    String? isEqualTo,
-    String? isNotEqualTo,
-    String? isLessThan,
-    String? isLessThanOrEqualTo,
-    String? isGreaterThan,
-    String? isGreaterThanOrEqualTo,
-    bool? isNull,
-    List<String>? whereIn,
-    List<String>? whereNotIn,
-  });
-
-  CommentQuery orderByDocumentId({
-    bool descending = false,
-    String startAt,
-    String startAfter,
-    String endAt,
-    String endBefore,
-    CommentDocumentSnapshot? startAtDocument,
-    CommentDocumentSnapshot? endAtDocument,
-    CommentDocumentSnapshot? endBeforeDocument,
-    CommentDocumentSnapshot? startAfterDocument,
-  });
-
-  CommentQuery orderByAuthorName({
-    bool descending = false,
-    String startAt,
-    String startAfter,
-    String endAt,
-    String endBefore,
-    CommentDocumentSnapshot? startAtDocument,
-    CommentDocumentSnapshot? endAtDocument,
-    CommentDocumentSnapshot? endBeforeDocument,
-    CommentDocumentSnapshot? startAfterDocument,
-  });
-
-  CommentQuery orderByMessage({
-    bool descending = false,
-    String startAt,
-    String startAfter,
-    String endAt,
-    String endBefore,
-    CommentDocumentSnapshot? startAtDocument,
-    CommentDocumentSnapshot? endAtDocument,
-    CommentDocumentSnapshot? endBeforeDocument,
-    CommentDocumentSnapshot? startAfterDocument,
-  });
-}
-
-class _$CommentQuery extends QueryReference<Comment, CommentQuerySnapshot>
-    implements CommentQuery {
-  _$CommentQuery(
-    this._collection, {
-    required Query<Comment> $referenceWithoutCursor,
-    $QueryCursor $queryCursor = const $QueryCursor(),
-  }) : super(
-          $referenceWithoutCursor: $referenceWithoutCursor,
-          $queryCursor: $queryCursor,
-        );
-
-  final CollectionReference<Object?> _collection;
-
-  @override
-  Stream<CommentQuerySnapshot> snapshots([SnapshotOptions? options]) {
-    return reference.snapshots().map(CommentQuerySnapshot._fromQuerySnapshot);
-  }
-
-  @override
-  Future<CommentQuerySnapshot> get([GetOptions? options]) {
-    return reference.get(options).then(CommentQuerySnapshot._fromQuerySnapshot);
-  }
-
-  @override
-  CommentQuery limit(int limit) {
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: $referenceWithoutCursor.limit(limit),
-      $queryCursor: $queryCursor,
-    );
-  }
-
-  @override
-  CommentQuery limitToLast(int limit) {
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: $referenceWithoutCursor.limitToLast(limit),
-      $queryCursor: $queryCursor,
-    );
-  }
-
-  CommentQuery orderByFieldPath(
-    FieldPath fieldPath, {
-    bool descending = false,
-    Object? startAt = _sentinel,
-    Object? startAfter = _sentinel,
-    Object? endAt = _sentinel,
-    Object? endBefore = _sentinel,
-    CommentDocumentSnapshot? startAtDocument,
-    CommentDocumentSnapshot? endAtDocument,
-    CommentDocumentSnapshot? endBeforeDocument,
-    CommentDocumentSnapshot? startAfterDocument,
-  }) {
-    final query =
-        $referenceWithoutCursor.orderBy(fieldPath, descending: descending);
-    var queryCursor = $queryCursor;
-
-    if (startAtDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        startAt: const [],
-        startAtDocumentSnapshot: startAtDocument.snapshot,
-      );
-    }
-    if (startAfterDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        startAfter: const [],
-        startAfterDocumentSnapshot: startAfterDocument.snapshot,
-      );
-    }
-    if (endAtDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        endAt: const [],
-        endAtDocumentSnapshot: endAtDocument.snapshot,
-      );
-    }
-    if (endBeforeDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        endBefore: const [],
-        endBeforeDocumentSnapshot: endBeforeDocument.snapshot,
-      );
-    }
-
-    if (startAt != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        startAt: [...queryCursor.startAt, startAt],
-        startAtDocumentSnapshot: null,
-      );
-    }
-    if (startAfter != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        startAfter: [...queryCursor.startAfter, startAfter],
-        startAfterDocumentSnapshot: null,
-      );
-    }
-    if (endAt != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        endAt: [...queryCursor.endAt, endAt],
-        endAtDocumentSnapshot: null,
-      );
-    }
-    if (endBefore != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        endBefore: [...queryCursor.endBefore, endBefore],
-        endBeforeDocumentSnapshot: null,
-      );
-    }
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: query,
-      $queryCursor: queryCursor,
-    );
-  }
-
-  CommentQuery whereFieldPath(
-    FieldPath fieldPath, {
-    Object? isEqualTo,
-    Object? isNotEqualTo,
-    Object? isLessThan,
-    Object? isLessThanOrEqualTo,
-    Object? isGreaterThan,
-    Object? isGreaterThanOrEqualTo,
-    Object? arrayContains,
-    List<Object?>? arrayContainsAny,
-    List<Object?>? whereIn,
-    List<Object?>? whereNotIn,
-    bool? isNull,
-  }) {
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: $referenceWithoutCursor.where(
-        fieldPath,
-        isEqualTo: isEqualTo,
-        isNotEqualTo: isNotEqualTo,
-        isLessThan: isLessThan,
-        isLessThanOrEqualTo: isLessThanOrEqualTo,
-        isGreaterThan: isGreaterThan,
-        isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
-        arrayContains: arrayContains,
-        arrayContainsAny: arrayContainsAny,
-        whereIn: whereIn,
-        whereNotIn: whereNotIn,
-        isNull: isNull,
-      ),
-      $queryCursor: $queryCursor,
-    );
-  }
-
-  CommentQuery whereDocumentId({
-    String? isEqualTo,
-    String? isNotEqualTo,
-    String? isLessThan,
-    String? isLessThanOrEqualTo,
-    String? isGreaterThan,
-    String? isGreaterThanOrEqualTo,
-    bool? isNull,
-    List<String>? whereIn,
-    List<String>? whereNotIn,
-  }) {
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: $referenceWithoutCursor.where(
-        FieldPath.documentId,
-        isEqualTo: isEqualTo,
-        isNotEqualTo: isNotEqualTo,
-        isLessThan: isLessThan,
-        isLessThanOrEqualTo: isLessThanOrEqualTo,
-        isGreaterThan: isGreaterThan,
-        isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
-        isNull: isNull,
-        whereIn: whereIn,
-        whereNotIn: whereNotIn,
-      ),
-      $queryCursor: $queryCursor,
-    );
-  }
-
-  CommentQuery whereAuthorName({
-    String? isEqualTo,
-    String? isNotEqualTo,
-    String? isLessThan,
-    String? isLessThanOrEqualTo,
-    String? isGreaterThan,
-    String? isGreaterThanOrEqualTo,
-    bool? isNull,
-    List<String>? whereIn,
-    List<String>? whereNotIn,
-  }) {
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: $referenceWithoutCursor.where(
-        _$CommentFieldMap['authorName']!,
-        isEqualTo: isEqualTo != null
-            ? _$CommentPerFieldToJson.authorName(isEqualTo)
-            : null,
-        isNotEqualTo: isNotEqualTo != null
-            ? _$CommentPerFieldToJson.authorName(isNotEqualTo)
-            : null,
-        isLessThan: isLessThan != null
-            ? _$CommentPerFieldToJson.authorName(isLessThan)
-            : null,
-        isLessThanOrEqualTo: isLessThanOrEqualTo != null
-            ? _$CommentPerFieldToJson.authorName(isLessThanOrEqualTo)
-            : null,
-        isGreaterThan: isGreaterThan != null
-            ? _$CommentPerFieldToJson.authorName(isGreaterThan)
-            : null,
-        isGreaterThanOrEqualTo: isGreaterThanOrEqualTo != null
-            ? _$CommentPerFieldToJson.authorName(isGreaterThanOrEqualTo)
-            : null,
-        isNull: isNull,
-        whereIn: whereIn?.map((e) => _$CommentPerFieldToJson.authorName(e)),
-        whereNotIn:
-            whereNotIn?.map((e) => _$CommentPerFieldToJson.authorName(e)),
-      ),
-      $queryCursor: $queryCursor,
-    );
-  }
-
-  CommentQuery whereMessage({
-    String? isEqualTo,
-    String? isNotEqualTo,
-    String? isLessThan,
-    String? isLessThanOrEqualTo,
-    String? isGreaterThan,
-    String? isGreaterThanOrEqualTo,
-    bool? isNull,
-    List<String>? whereIn,
-    List<String>? whereNotIn,
-  }) {
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: $referenceWithoutCursor.where(
-        _$CommentFieldMap['message']!,
-        isEqualTo: isEqualTo != null
-            ? _$CommentPerFieldToJson.message(isEqualTo)
-            : null,
-        isNotEqualTo: isNotEqualTo != null
-            ? _$CommentPerFieldToJson.message(isNotEqualTo)
-            : null,
-        isLessThan: isLessThan != null
-            ? _$CommentPerFieldToJson.message(isLessThan)
-            : null,
-        isLessThanOrEqualTo: isLessThanOrEqualTo != null
-            ? _$CommentPerFieldToJson.message(isLessThanOrEqualTo)
-            : null,
-        isGreaterThan: isGreaterThan != null
-            ? _$CommentPerFieldToJson.message(isGreaterThan)
-            : null,
-        isGreaterThanOrEqualTo: isGreaterThanOrEqualTo != null
-            ? _$CommentPerFieldToJson.message(isGreaterThanOrEqualTo)
-            : null,
-        isNull: isNull,
-        whereIn: whereIn?.map((e) => _$CommentPerFieldToJson.message(e)),
-        whereNotIn: whereNotIn?.map((e) => _$CommentPerFieldToJson.message(e)),
-      ),
-      $queryCursor: $queryCursor,
-    );
-  }
-
-  CommentQuery orderByDocumentId({
-    bool descending = false,
-    Object? startAt = _sentinel,
-    Object? startAfter = _sentinel,
-    Object? endAt = _sentinel,
-    Object? endBefore = _sentinel,
-    CommentDocumentSnapshot? startAtDocument,
-    CommentDocumentSnapshot? endAtDocument,
-    CommentDocumentSnapshot? endBeforeDocument,
-    CommentDocumentSnapshot? startAfterDocument,
-  }) {
-    final query = $referenceWithoutCursor.orderBy(FieldPath.documentId,
-        descending: descending);
-    var queryCursor = $queryCursor;
-
-    if (startAtDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        startAt: const [],
-        startAtDocumentSnapshot: startAtDocument.snapshot,
-      );
-    }
-    if (startAfterDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        startAfter: const [],
-        startAfterDocumentSnapshot: startAfterDocument.snapshot,
-      );
-    }
-    if (endAtDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        endAt: const [],
-        endAtDocumentSnapshot: endAtDocument.snapshot,
-      );
-    }
-    if (endBeforeDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        endBefore: const [],
-        endBeforeDocumentSnapshot: endBeforeDocument.snapshot,
-      );
-    }
-
-    if (startAt != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        startAt: [...queryCursor.startAt, startAt],
-        startAtDocumentSnapshot: null,
-      );
-    }
-    if (startAfter != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        startAfter: [...queryCursor.startAfter, startAfter],
-        startAfterDocumentSnapshot: null,
-      );
-    }
-    if (endAt != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        endAt: [...queryCursor.endAt, endAt],
-        endAtDocumentSnapshot: null,
-      );
-    }
-    if (endBefore != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        endBefore: [...queryCursor.endBefore, endBefore],
-        endBeforeDocumentSnapshot: null,
-      );
-    }
-
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: query,
-      $queryCursor: queryCursor,
-    );
-  }
-
-  CommentQuery orderByAuthorName({
-    bool descending = false,
-    Object? startAt = _sentinel,
-    Object? startAfter = _sentinel,
-    Object? endAt = _sentinel,
-    Object? endBefore = _sentinel,
-    CommentDocumentSnapshot? startAtDocument,
-    CommentDocumentSnapshot? endAtDocument,
-    CommentDocumentSnapshot? endBeforeDocument,
-    CommentDocumentSnapshot? startAfterDocument,
-  }) {
-    final query = $referenceWithoutCursor
-        .orderBy(_$CommentFieldMap['authorName']!, descending: descending);
-    var queryCursor = $queryCursor;
-
-    if (startAtDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        startAt: const [],
-        startAtDocumentSnapshot: startAtDocument.snapshot,
-      );
-    }
-    if (startAfterDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        startAfter: const [],
-        startAfterDocumentSnapshot: startAfterDocument.snapshot,
-      );
-    }
-    if (endAtDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        endAt: const [],
-        endAtDocumentSnapshot: endAtDocument.snapshot,
-      );
-    }
-    if (endBeforeDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        endBefore: const [],
-        endBeforeDocumentSnapshot: endBeforeDocument.snapshot,
-      );
-    }
-
-    if (startAt != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        startAt: [...queryCursor.startAt, startAt],
-        startAtDocumentSnapshot: null,
-      );
-    }
-    if (startAfter != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        startAfter: [...queryCursor.startAfter, startAfter],
-        startAfterDocumentSnapshot: null,
-      );
-    }
-    if (endAt != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        endAt: [...queryCursor.endAt, endAt],
-        endAtDocumentSnapshot: null,
-      );
-    }
-    if (endBefore != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        endBefore: [...queryCursor.endBefore, endBefore],
-        endBeforeDocumentSnapshot: null,
-      );
-    }
-
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: query,
-      $queryCursor: queryCursor,
-    );
-  }
-
-  CommentQuery orderByMessage({
-    bool descending = false,
-    Object? startAt = _sentinel,
-    Object? startAfter = _sentinel,
-    Object? endAt = _sentinel,
-    Object? endBefore = _sentinel,
-    CommentDocumentSnapshot? startAtDocument,
-    CommentDocumentSnapshot? endAtDocument,
-    CommentDocumentSnapshot? endBeforeDocument,
-    CommentDocumentSnapshot? startAfterDocument,
-  }) {
-    final query = $referenceWithoutCursor.orderBy(_$CommentFieldMap['message']!,
-        descending: descending);
-    var queryCursor = $queryCursor;
-
-    if (startAtDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        startAt: const [],
-        startAtDocumentSnapshot: startAtDocument.snapshot,
-      );
-    }
-    if (startAfterDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        startAfter: const [],
-        startAfterDocumentSnapshot: startAfterDocument.snapshot,
-      );
-    }
-    if (endAtDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        endAt: const [],
-        endAtDocumentSnapshot: endAtDocument.snapshot,
-      );
-    }
-    if (endBeforeDocument != null) {
-      queryCursor = queryCursor.copyWith(
-        endBefore: const [],
-        endBeforeDocumentSnapshot: endBeforeDocument.snapshot,
-      );
-    }
-
-    if (startAt != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        startAt: [...queryCursor.startAt, startAt],
-        startAtDocumentSnapshot: null,
-      );
-    }
-    if (startAfter != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        startAfter: [...queryCursor.startAfter, startAfter],
-        startAfterDocumentSnapshot: null,
-      );
-    }
-    if (endAt != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        endAt: [...queryCursor.endAt, endAt],
-        endAtDocumentSnapshot: null,
-      );
-    }
-    if (endBefore != _sentinel) {
-      queryCursor = queryCursor.copyWith(
-        endBefore: [...queryCursor.endBefore, endBefore],
-        endBeforeDocumentSnapshot: null,
-      );
-    }
-
-    return _$CommentQuery(
-      _collection,
-      $referenceWithoutCursor: query,
-      $queryCursor: queryCursor,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is _$CommentQuery &&
-        other.runtimeType == runtimeType &&
-        other.reference == reference;
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, reference);
-}
-
-class CommentDocumentSnapshot extends FirestoreDocumentSnapshot<Comment> {
-  CommentDocumentSnapshot._(this.snapshot) : data = snapshot.data();
-
-  @override
-  final DocumentSnapshot<Comment> snapshot;
-
-  @override
-  CommentDocumentReference get reference {
-    return CommentDocumentReference(
-      snapshot.reference,
-    );
-  }
-
-  @override
-  final Comment? data;
-}
-
-class CommentQuerySnapshot
-    extends FirestoreQuerySnapshot<Comment, CommentQueryDocumentSnapshot> {
-  CommentQuerySnapshot._(
-    this.snapshot,
-    this.docs,
-    this.docChanges,
-  );
-
-  factory CommentQuerySnapshot._fromQuerySnapshot(
-    QuerySnapshot<Comment> snapshot,
-  ) {
-    final docs = snapshot.docs.map(CommentQueryDocumentSnapshot._).toList();
-
-    final docChanges = snapshot.docChanges.map((change) {
-      return _decodeDocumentChange(
-        change,
-        CommentDocumentSnapshot._,
-      );
-    }).toList();
-
-    return CommentQuerySnapshot._(
-      snapshot,
-      docs,
-      docChanges,
-    );
-  }
-
-  static FirestoreDocumentChange<CommentDocumentSnapshot>
-      _decodeDocumentChange<T>(
-    DocumentChange<T> docChange,
-    CommentDocumentSnapshot Function(DocumentSnapshot<T> doc) decodeDoc,
-  ) {
-    return FirestoreDocumentChange<CommentDocumentSnapshot>(
-      type: docChange.type,
-      oldIndex: docChange.oldIndex,
-      newIndex: docChange.newIndex,
-      doc: decodeDoc(docChange.doc),
-    );
-  }
-
-  final QuerySnapshot<Comment> snapshot;
-
-  @override
-  final List<CommentQueryDocumentSnapshot> docs;
-
-  @override
-  final List<FirestoreDocumentChange<CommentDocumentSnapshot>> docChanges;
-}
-
-class CommentQueryDocumentSnapshot
-    extends FirestoreQueryDocumentSnapshot<Comment>
-    implements CommentDocumentSnapshot {
-  CommentQueryDocumentSnapshot._(this.snapshot) : data = snapshot.data();
-
-  @override
-  final QueryDocumentSnapshot<Comment> snapshot;
-
-  @override
-  final Comment data;
-
-  @override
-  CommentDocumentReference get reference {
-    return CommentDocumentReference(snapshot.reference);
-  }
-}
-
-/// A collection reference object can be used for adding documents,
-/// getting document references, and querying for documents
-/// (using the methods inherited from Query).
 abstract class ChildMovieCollectionReference
     implements
         ChildMovieQuery,
@@ -2915,7 +1945,7 @@ class _$ChildMovieCollectionReference extends _$ChildMovieQuery
     firestore ??= FirebaseFirestore.instance;
 
     return _$ChildMovieCollectionReference._(
-      firestore.collection('example').withConverter(
+      firestore.collection('child-movies').withConverter(
             fromFirestore: ChildMovieCollectionReference.fromFirestore,
             toFirestore: ChildMovieCollectionReference.toFirestore,
           ),
@@ -4829,6 +3859,40 @@ Movie _$MovieFromJson(Map<String, dynamic> json) => Movie(
       id: json['id'] as String,
     );
 
+const _$MovieFieldMap = <String, String>{
+  'id': 'id',
+  'poster': 'poster',
+  'likes': 'likes',
+  'title': 'title',
+  'year': 'year',
+  'runtime': 'runtime',
+  'rated': 'rated',
+  'genre': 'genre',
+  'tags': 'tags',
+};
+
+// ignore: unused_element
+abstract class _$MoviePerFieldToJson {
+  // ignore: unused_element
+  static Object? id(String instance) => instance;
+  // ignore: unused_element
+  static Object? poster(String instance) => instance;
+  // ignore: unused_element
+  static Object? likes(int instance) => instance;
+  // ignore: unused_element
+  static Object? title(String instance) => instance;
+  // ignore: unused_element
+  static Object? year(int instance) => instance;
+  // ignore: unused_element
+  static Object? runtime(String instance) => instance;
+  // ignore: unused_element
+  static Object? rated(String instance) => instance;
+  // ignore: unused_element
+  static Object? genre(List<String>? instance) => instance;
+  // ignore: unused_element
+  static Object? tags(Set<String>? instance) => instance?.toList();
+}
+
 Map<String, dynamic> _$MovieToJson(Movie instance) => <String, dynamic>{
       'id': instance.id,
       'poster': instance.poster,
@@ -4851,6 +3915,34 @@ ChildMovie _$ChildMovieFromJson(Map<String, dynamic> json) => ChildMovie(
       year: json['year'] as int,
     );
 
+const _$ChildMovieFieldMap = <String, String>{
+  'id': 'id',
+  'poster': 'poster',
+  'likes': 'likes',
+  'title': 'title',
+  'year': 'year',
+  'runtime': 'runtime',
+  'rated': 'rated',
+};
+
+// ignore: unused_element
+abstract class _$ChildMoviePerFieldToJson {
+  // ignore: unused_element
+  static Object? id(String instance) => instance;
+  // ignore: unused_element
+  static Object? poster(String instance) => instance;
+  // ignore: unused_element
+  static Object? likes(int instance) => instance;
+  // ignore: unused_element
+  static Object? title(String instance) => instance;
+  // ignore: unused_element
+  static Object? year(int instance) => instance;
+  // ignore: unused_element
+  static Object? runtime(String instance) => instance;
+  // ignore: unused_element
+  static Object? rated(String instance) => instance;
+}
+
 Map<String, dynamic> _$ChildMovieToJson(ChildMovie instance) =>
     <String, dynamic>{
       'id': instance.id,
@@ -4860,14 +3952,4 @@ Map<String, dynamic> _$ChildMovieToJson(ChildMovie instance) =>
       'year': instance.year,
       'runtime': instance.runtime,
       'rated': instance.rated,
-    };
-
-Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
-      authorName: json['authorName'] as String,
-      message: json['message'] as String,
-    );
-
-Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
-      'authorName': instance.authorName,
-      'message': instance.message,
     };
