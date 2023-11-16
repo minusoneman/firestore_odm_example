@@ -20,42 +20,20 @@ const firestoreSerializable = JsonSerializable(
 class Movie {
   Movie({
     this.genre,
-    this.tags,
     required this.likes,
-    required this.poster,
-    required this.rated,
-    required this.runtime,
-    required this.title,
-    required this.year,
-    required this.id,
   }) {
     _$assertMovie(this);
   }
 
-  @Id()
-  final String id;
-  final String poster;
   @Min(0)
   final int likes;
-  final String title;
-  @Min(0)
-  final int year;
-  final String runtime;
-  final String rated;
   final List<String>? genre;
-  final Set<String>? tags;
 }
 
 @firestoreSerializable
 class ChildMovie extends Movie {
   ChildMovie({
-    required super.id,
     required super.likes,
-    required super.poster,
-    required super.rated,
-    required super.runtime,
-    required super.title,
-    required super.year,
   });
 }
 
